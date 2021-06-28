@@ -2,6 +2,7 @@ package net.nokok.handson;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -18,15 +19,26 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AnnotationProcessor extends AbstractProcessor {
+    private Types typeUtils;
+    private Messager messager;
+    private PrimitiveType intType;
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        this.typeUtils = processingEnv.getTypeUtils();
+        this.messager = processingEnv.getMessager();
+        this.intType = typeUtils.getPrimitiveType(TypeKind.INT);
+    }
+
     @Override
     public boolean process(
             Set<? extends TypeElement> annotations,
             RoundEnvironment roundEnv
     ) {
-        Types typeUtils = processingEnv.getTypeUtils();
-        Messager messager = processingEnv.getMessager();
-        PrimitiveType intType = typeUtils.getPrimitiveType(TypeKind.INT);
-        List<? extends Element> collect = annotations.stream().flatMap(r -> roundEnv.getElementsAnnotatedWith(r).stream()).collect(Collectors.toList());
+        List<? extends Element> collect = annotations
+                .stream()
+                .flatMap(r -> roundEnv.getElementsAnnotatedWith(r).stream())
+                .collect(Collectors.toList());
         List<VariableElement> variableElements = ElementFilter.fieldsIn(collect);
         for (VariableElement variableElement : variableElements) {
             TypeMirror typeMirror = variableElement.asType();
