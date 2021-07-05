@@ -1,5 +1,9 @@
-import net.nokok.handson.ShowTypeName;
+import net.nokok.handson.IntField;
 
-@ShowTypeName
 public class Sample {
+    @IntField
+    int intValue;
+
+    @IntField
+    String stringValue;
 }

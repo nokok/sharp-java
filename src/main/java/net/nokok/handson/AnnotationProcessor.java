@@ -3,6 +3,7 @@ package net.nokok.handson;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
@@ -12,13 +13,16 @@ public class AnnotationProcessor extends AbstractProcessor {
             Set<? extends TypeElement> annotations,
             RoundEnvironment roundEnv
     ) {
-        System.out.println("Hello Annotation Processing");
+        for (TypeElement annotation : annotations) {
+            Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(annotation);
+            System.out.println(elementsAnnotatedWith);
+        }
         return false;
     }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Set.of(ShowTypeName.class.getName());
+        return Set.of(IntField.class.getName());
     }
 
     @Override
